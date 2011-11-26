@@ -1,0 +1,421 @@
+﻿@model FlexigridCrudDemo.Models.Person
+           
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<link href="@Url.Content("~/Scripts/flexigrid-1.1/css/flexigrid.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/flexigrid-1.1/js/flexigrid.js")" type="text/javascript"></script>
+
+
+
+<script src="@Url.Content("~/Scripts/flexigrid-helpers/helpers.js")"></script>
+<script src="@Url.Content("~/Scripts/flexigrid-helpers/grid-crud-helpers.js")" type="text/javascript"></script>
+<link href="@Url.Content("~/Scripts/flexigrid-helpers/Crud.css")" rel="stylesheet" type="text/css" />
+
+
+<script src="@Url.Content("~/Scripts/Ienablemuch.Scripts/Ienablemuch.JsValid/ienablemuch.jsvalid.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/Ienablemuch.Scripts/ParseDynamicContent.js")" type="text/javascript"></script>
+
+@*<link href="@Url.Content("~/Scripts/Ienablemuch.Scripts/Ienablemuch.JqueryAjaxComboBox/css/jquery.ajaxComboBox.css")"
+    rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/Ienablemuch.Scripts/Ienablemuch.JqueryAjaxComboBox/js/jquery.ajaxComboBox.3.6.1.js")"
+    type="text/javascript"></script>
+*@
+
+
+
+<link href="/Scripts/Ienablemuch.Scripts/Ienablemuch.JqueryAjaxComboBox/css/jquery.ajaxComboBox.css"
+    rel="stylesheet" type="text/css" />
+
+<script src="/Scripts/Ienablemuch.Scripts/Ienablemuch.JqueryAjaxComboBox/js/jquery.ajaxComboBox.3.7.js"
+    type="text/javascript"></script>
+
+<table id="firstTable">
+</table>
+<table id="secondTable">
+</table>
+
+
+<script type="text/javascript">
+    var formHtml = "";
+    
+
+    function canRender() {
+        return _canRender;
+    }
+
+    $(function () {
+        _canRender = false;
+    });
+
+</script>
+
+<div id="editor" style="visibility: hidden">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "theForm" }))
+    {
+        <fieldset>
+            <legend>Person</legend>
+
+            @Html.HiddenFor(x => x.PersonId)
+            @Html.HiddenFor(x => x.RowVersion)
+
+            <div class="editor-label">
+                @Html.LabelFor(x => x.Username)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(x => x.Username)
+                @Html.ValidationMessageFor(x => x.Username)
+            </div>
+
+
+            <div class="editor-label">
+                @Html.LabelFor(x => x.Firstname)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(x => x.Firstname)
+                @Html.ValidationMessageFor(x => x.Firstname)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(x => x.Lastname)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(x => x.Lastname)
+                @Html.ValidationMessageFor(x => x.Lastname)
+            </div>
+
+
+            <div class="editor-label">
+                @Html.LabelFor(x => x.Country.CountryId)
+            </div>
+            <div class="editor-field">
+                @*@Html.AjaxComboBox("Country.CountryId", "/Country/Management/Lookup/", "/Country/Management/Caption/", new { style = "width: 300px " }, new { sub_info = true })*@
+                @*@Html.AjaxComboBoxFor(x => x.Country.CountryId, "/Country/Management/Lookup/", "/Country/Management/Caption/", new { style = "width: 300px " }, new { sub_info = true })*@
+
+
+                                 
+
+                @Html.ValidationMessageFor(x => x.Country.CountryId)
+            </div>
+            
+
+            <div class="editor-label">
+                @Html.LabelFor(x => x.FavoriteNumber)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(x => x.FavoriteNumber)
+                @Html.ValidationMessageFor(x => x.FavoriteNumber)                
+            </div>
+
+            <p>
+                <input type="submit" value="Save" />
+                <input type="button" id="Closer" value="Close" />
+            </p>
+
+            @Html.AjaxComboBoxFor(x => x.Country.CountryId, "/Countries/Management/Lookup/", "/Countries/Management/Caption/",
+            new { style="width: 100px" }, new { sub_info = true, can_render_callback = "canRender", textbox_width = 100 })                    
+
+            
+        </fieldset>
+        
+        <div style="max-width: 500px; width: 500px;">
+            @Html.JsAccessibleValidationSummary(excludePropertyErrors: true)            
+        </div>
+    }
+<script type="text/javascript">
+
+    $(function () {
+
+        
+        if (!canRender()) return;
+
+
+        var scope = $('#theForm');
+        parseDynamicContent(scope);
+
+
+
+
+        $('#Closer', scope).click(function (e) {
+            closeForm($(scope));
+        });
+
+        $('input[type=submit]', scope).click(function (e) {
+            e.preventDefault();
+
+            if (!scope.valid()) {
+                alert('has invalid');
+                return;
+            }
+
+            save(scope);
+
+            // closeForm(scope);
+
+        });
+
+        $(scope).attr('id', guid());
+    });
+
+    function save(scope) {
+        // setFgEditText(scope, 'Lastname', 'Hello');
+
+        $.ajax({
+            url: '/People/Management/SaveViaAjax',
+            type: 'POST',
+            data: $(scope).serialize(),
+            success: function (result) {
+
+                var isOk = $(scope).modelValidation(result);
+
+
+                if (isOk) {
+
+                    var isNew = $('#PersonId', scope).val() == '';
+
+                    if (isNew) {
+                        $('#PersonId', scope).val(result.PersonId);
+                    }
+
+                    $('#RowVersion', scope).val(result.RowVersion);
+
+
+                    if (isNew) {
+                        $(scope).closest('table').flexReload();
+                    }
+                    else {
+
+
+                        setFgEditText(scope, 'Username', $('#Username', scope).val());
+                        setFgEditText(scope, 'Firstname', $('#Firstname', scope).val());
+                        setFgEditText(scope, 'Lastname', $('#Lastname', scope).val());
+                        setFgEditText(scope, 'FavoriteNumber', $('#FavoriteNumber', scope).val());
+
+                        closeForm(scope);
+                    }
+
+                }
+
+
+                // $('#firstTable').flexReload();
+
+
+
+            },
+            error: function (a, b, c) {
+                alert('see');
+                alert(a.statusText);
+                alert(b);
+                alert(c);
+                alert('hei');
+            }
+        });                     //ajax
+    }//save
+
+</script>
+</div>
+
+
+
+<script type="text/javascript">
+
+
+    $(function () {
+        // main..
+        setupForm();
+
+        setupFirstTable();
+        setupSecondTable();
+
+        
+        // ..main
+    });
+
+
+    function setupForm() {
+        formHtml = $('#editor').html();
+        $('#editor').remove();        
+    }
+
+    function setupFirstTable() {
+        $('#firstTable').flexigrid({
+            url: '/People/Management/List',
+            dataType: 'json',
+            colModel: [
+                    { display: 'User', name: 'Username', width: 150, sortable: true, align: 'left' },
+                    { display: 'Firstname', name: 'Firstname', width: 150, sortable: true, align: 'left' },
+                    { display: 'Lastname', name: 'Lastname', width: 150, sortable: true, align: 'left' },
+                    { display: 'Favorite#', name: 'FavoriteNumber', width: 150, sortable: true, align: 'left' },
+                    { display: 'Country', name: 'CountryId', width: 150, sortable: true, align: 'left' }
+                ],
+
+            buttons: [
+                    { name: 'Add', bclass: 'add', onpress: add },
+                    { separator: true },
+                    { name: 'Edit', bclass: 'edit', onpress: edit },
+                    { separator: true },
+			        { name: 'Delete', bclass: 'delete', onpress: del }
+                ],
+
+            singleSelect: true,
+            sortname: 'Lastname',
+            sortorder: 'asc',
+            usepager: true,
+            title: 'Persons',
+            useRp: true,
+            rp: 5,
+            rpOptions: [5, 10, 15, 20, 25, 40],
+            showTableToggleBtn: true,
+            width: 900,
+            height: 'auto',
+            preProcess: function (data) {
+                var rp = getFgRowsPerPage($('#firstTable'));
+                for (i = data.rows.length; i < rp; ++i) {
+                    data.rows.push({ 'id': '', 'cell': ['', '', '', '',''] });
+                }
+                return data;
+            }
+        }); // flexigrid
+
+        setupGrid($('#firstTable'));
+
+    } //setupFirstTable
+
+    function setupSecondTable() {
+    }
+
+
+    function add(com, grid) {
+        closeFormByGrid(grid);
+        showAddFormByGrid(grid, formHtml);
+    }
+
+
+    function edit(com, grid) {
+
+        closeFormByGrid(grid);
+
+
+        var items = $('.trSelected', grid);
+        var item = items[0];
+        var pk = item.id.substr(3);
+
+        if (pk.length == 0) return;
+
+
+        $.ajax({
+            url: '/People/Management/GetUpdated/' + pk,
+            type: 'POST',
+            success: function (data) {
+
+
+
+                showEditForm(item, formHtml, function () {
+
+                    var form = $('form', grid);
+
+                
+                    $('#PersonId', form).val(data.Record.PersonId);
+                    $('#Username', form).val(data.Record.Username);
+                    $('#Firstname', form).val(data.Record.Firstname);
+                    $('#Lastname', form).val(data.Record.Lastname);
+
+               
+                    // $('#Country_CountryId', form).val(data.Record.Country.CountryId);
+                    $('#Country_CountryId', form).val(data.Record.CountryId);
+                    $('#FavoriteNumber', form).val(data.Record.FavoriteNumber);
+                    $('#RowVersion', form).val(data.Record.RowVersion);
+
+               
+                    setFgEditText(grid, 'Username', data.Record.Username);
+                    setFgEditText(grid, 'Firstname', data.Record.Firstname);
+                    setFgEditText(grid, 'Lastname', data.Record.Lastname);
+                    // setFgEditText(grid, 'CountryId', data.Record.Country.CountryId);
+                    setFgEditText(grid, 'FavoriteNumber', data.Record.FavoriteNumber);
+
+
+                }); //showEditForm
+
+            } //success
+        });          //ajax
+    }//edit
+
+    function del(com, grid) {
+    }
+
+
+</script>
+
+
+<span class="ac_area" id="Kountry_CountryId" style="width: 200px; padding: 0px;"></span>
+
+
+<script>
+    var n = $('#Kountry_CountryId').ajaxComboBox('/Countries/Management/Lookup/', {
+        'lang': 'en',
+        'select_only': true,
+        'mini': true,
+        'init_src': '/Country/Management/Caption/',
+        'init_val': ['']
+        , other_attr: { 'data-val-required': 'The CountryId field isrequired.', 'data-val': 'true' }
+        , "sub_info": true
+        , textbox_width : 100
+        
+    });
+
+
+</script>
+
+
+<script>
+    $(function () {        
+        _canRender = true;
+    });
+
+</script>
+
+<br /><br /><br /><br /><br /><br /><br /><br /><br />
+
+
+
+
+@*<span class="ac_area" id="Country_CountryId" style="width: 300px "></span>
+
+<script type="text/javascript">
+
+        
+    $(function () {
+
+
+        var n = $('#Country_CountryId').ajaxComboBox('/Countries/Management/Lookup/', {
+            'lang': 'en',
+            'select_only': true,
+            'mini': true,
+            'init_src': '/Country/Management/Caption/',
+            'init_val': ['']
+            , other_attr: { 'data-val-required': 'The CountryId field isrequired.', 'data-val': 'true'} // { 'data-val-required': 'The CountryId field is required.', 'data-val': 'true' }
+        , "sub_info": true
+        , can_render_callback: "canRender"
+        });
+
+
+        if ($.validator != undefined)
+            $.validator.unobtrusive.parseDynamicContent($('form'));
+
+    });
+
+
+</script>
+
+
+
+*@
+
+
