@@ -1,0 +1,24 @@
+﻿body {
+}
+
+.flexigrid div.bDiv tr.fgEdit:hover td
+{    
+    background: none;
+    border-left: 1px solid #eef8ff;
+    border-bottom: 1px dotted #a8d8eb;
+}
+
+.flexigrid div.fbutton .add
+{
+	background: url(./images/add.png) no-repeat center left;
+}	
+
+.flexigrid div.fbutton .delete
+{
+	background: url(./images/delete.png) no-repeat center left;
+}			
+		
+.flexigrid div.fbutton .edit
+{
+	background: url(./images/edit.png) no-repeat center left;
+}			
