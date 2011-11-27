@@ -1271,6 +1271,7 @@ Contents
                 /*var theTextHeight = $(area_pack).css('height');
                 theTextHeight = parseInt(theTextHeight.replace('px', ''));*/
                 theTextHeight = $(area_pack).height();                
+                
                 //alert(theTextHeight); 24 when not in table. why 34 when inside the table?
 
 
