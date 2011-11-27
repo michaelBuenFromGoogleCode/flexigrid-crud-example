@@ -1,0 +1,76 @@
+﻿/****** Object:  Table [dbo].[Country]    Script Date: 11/27/2011 21:53:05 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Country](
+	[CountryId] [uniqueidentifier] NOT NULL,
+	[CountryCode] [varchar](2) NOT NULL,
+	[CountryName] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[CountryId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[CountryCode] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Country] ADD  DEFAULT (newid()) FOR [CountryId]
+GO
+
+
+/****** Object:  Table [dbo].[Person]    Script Date: 11/27/2011 21:53:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[Person](
+	[PersonId] [uniqueidentifier] NOT NULL,
+	[Lastname] [varchar](50) NOT NULL,
+	[Firstname] [varchar](50) NOT NULL,
+	[FavoriteNumber] [int] NOT NULL,
+	[Country_CountryId] [uniqueidentifier] NULL,
+	[RowVersion] [timestamp] NULL,
+	[Username] [nvarchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[PersonId] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+ALTER TABLE [dbo].[Person]  WITH CHECK ADD  CONSTRAINT [fk_Person__Country] FOREIGN KEY([Country_CountryId])
+REFERENCES [dbo].[Country] ([CountryId])
+GO
+
+ALTER TABLE [dbo].[Person] CHECK CONSTRAINT [fk_Person__Country]
+GO
+
+ALTER TABLE [dbo].[Person] ADD  DEFAULT (newid()) FOR [PersonId]
+GO
+
+ALTER TABLE [dbo].[Person] ADD  CONSTRAINT [DF_Person_Username]  DEFAULT ('') FOR [Username]
+GO
+
+
