@@ -233,6 +233,8 @@
     <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\del_over.png" />
     <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\select_ng.png" />
     <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\select_ng_mini.png" />
+    <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\select_ok.png" />
+    <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\select_ok_mini.png" />
     <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\x_select_ok.png" />
     <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\img\x_select_ok_mini.png" />
     <Content Include="Scripts\Ienablemuch.Scripts\Ienablemuch.JqueryAjaxComboBox\js\jquery.ajaxComboBox.3.7.js" />
