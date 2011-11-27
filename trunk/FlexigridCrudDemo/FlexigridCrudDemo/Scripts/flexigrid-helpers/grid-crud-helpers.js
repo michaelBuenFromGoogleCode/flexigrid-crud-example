@@ -18,16 +18,21 @@ function closeForm(form) {
 function showAddFormByGrid(grid, formHtml) {
 
     var tbl = $('.bDiv table', grid);
-    showAddForm(tbl, formHtml);
+    showAddForm(tbl, formHtml);    
 }
 
 
 function showAddForm(tbl, formHtml) {
     var tbody = $('tbody', tbl);
+    if (tbody.length == 0) {
+        $(tbl).append($('<tbody/>'));
+        tbody = $('tbody', tbl);
+    }
+    
 
     $(tbody).prepend('<tr class="fgEdit"><td width="1" colspan="20" style="border-width: thin; border-top: thick; border-color: #EEE; white-space: normal"><span></span></td></tr>');
     var content = $('tr td span', tbody);
-
+        
     $(content).html(formHtml);
 
 
@@ -80,3 +85,6 @@ function setFgEditText(tbl, columnName, text) {
     $('tr[id=' + editId + '] td:nth-child(' + index + ') div', grd).text(text);
 
 }
+
+
+

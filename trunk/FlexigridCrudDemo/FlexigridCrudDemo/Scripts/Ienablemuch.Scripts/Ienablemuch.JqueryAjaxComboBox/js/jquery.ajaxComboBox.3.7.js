@@ -2,38 +2,38 @@
 Infomation
 ==========================================================================================
 jQuery Plugin
-	Name       : jquery.ajaxComboBox
-	Version    : 3.7
-	Update     : 2011-11-16
-	Author     : sutara_lumpur
-	Author-URI : http://d.hatena.ne.jp/sutara_lumpur/20090124/1232781879
-	License    : MIT License (http://www.opensource.org/licenses/mit-license.php)
-	Based-on   : Uses code and techniques from following libraries...
-		* jquery.suggest 1.1
-			Author     : Peter Vulgaris
-			Author-URI : http://www.vulgarisoip.com/
+Name       : jquery.ajaxComboBox
+Version    : 3.7
+Update     : 2011-11-16
+Author     : sutara_lumpur
+Author-URI : http://d.hatena.ne.jp/sutara_lumpur/20090124/1232781879
+License    : MIT License (http://www.opensource.org/licenses/mit-license.php)
+Based-on   : Uses code and techniques from following libraries...
+* jquery.suggest 1.1
+Author     : Peter Vulgaris
+Author-URI : http://www.vulgarisoip.com/
 ==========================================================================================
 
 Contents
 ==========================================================================================
-	01. ComboBoxパッケージを生成
-	02. ComboBoxパッケージ用のメソッド
-	03. 変数・部品の定義
-	04. イベントハンドラ
-	05. ComboBox用メソッド - 未分類
-	06. ComboBox用メソッド - Ajax関連
-	07. ComboBox用メソッド - ページナビ関連
-	08. ComboBox用メソッド - 候補リスト関連
-	09. ComboBox用メソッド - サブ情報関連
-	10. 処理の始まり
+01. ComboBoxパッケージを生成
+02. ComboBoxパッケージ用のメソッド
+03. 変数・部品の定義
+04. イベントハンドラ
+05. ComboBox用メソッド - 未分類
+06. ComboBox用メソッド - Ajax関連
+07. ComboBox用メソッド - ページナビ関連
+08. ComboBox用メソッド - 候補リスト関連
+09. ComboBox用メソッド - サブ情報関連
+10. 処理の始まり
 ==========================================================================================
 */
 
 
 /* 
- ASP.NET MVC compatibility made by Michael Buen
- Update: 2011-11-26
- */
+ASP.NET MVC compatibility made by Michael Buen
+Update: 2011-11-26
+*/
 
 (function ($) {
     $.ajaxComboBox = function (area_pack, source, options, msg) {
@@ -63,6 +63,15 @@ Contents
             this.box.hidden.val('');
             this.box.resetPage();
         };
+
+        this.showCaption = function () {
+            this.box.showCaption();
+        }
+
+        this.getText = function () {
+            return this.box.input.val();
+        }
+
 
         //...added by Buen
 
@@ -216,6 +225,9 @@ Contents
             this.hidden = null;
             this.resetPage = function () {
                 page_num_all = 1;
+            };
+            this.showCaption = function () {
+                showValueCaption(this.hidden.val());
             };
             // ...added
 
@@ -589,25 +601,45 @@ Contents
             function setInitVal() {
                 if (options.init_val === false) return;
 
+
+
                 if (options.select_only) {
+
+
                     //------------------------------------------
                     //セレクト専用への値挿入
                     //------------------------------------------
                     //hiddenへ値を挿入
                     $hidden.val(options.init_val[num - 1]);
 
+
+
                     //テキストボックスへ値を挿入
                     var init_val_data = '';
-                    // var $xhr2 = $.get( // replaced- by Buen
-                    var $xhr2 = $.post( // replaced+ by Buen
+                    showValueCaption(options.init_val[num - 1]); // Refactored[1] by Buen
+
+                } else {
+                    //------------------------------------------
+                    //通常の、テキストボックスへの値挿入
+                    //------------------------------------------
+                    prev_value = options.init_val[num - 1];
+                    $input.val(options.init_val[num - 1]);
+                }
+            }
+
+            // Refactored[1] by Buen
+            function showValueCaption(theValue) {
+                // var $xhr2 = $.get( // replaced- by Buen
+                var $xhr2 = $.post( // replaced+ by Buen. POST is more secure
 						options.init_src,
 						{
-						    'q_word': options.init_val[num - 1],
+						    'q_word': theValue,
 						    'field': options.field,
 						    'primary_key': options.primary_key,
 						    'db_table': options.db_table
 						},
 						function (data) {
+						    alert("see " + data.toString());
 						    $input.val(data);
 						    prev_value = data;
 
@@ -618,16 +650,10 @@ Contents
 						        'alt': msg['get_all_alt'],
 						        'title': msg['select_ok']
 						    });
-						}
+						},
+                        "text"
 					);
-                } else {
-                    //------------------------------------------
-                    //通常の、テキストボックスへの値挿入
-                    //------------------------------------------
-                    prev_value = options.init_val[num - 1];
-                    $input.val(options.init_val[num - 1]);
-                }
-            }
+            } //showValueCaption
 
             //**********************************************
             //選択候補を追いかけて画面をスクロール
@@ -1271,7 +1297,7 @@ Contents
                 /*var theTextHeight = $(area_pack).css('height');
                 theTextHeight = parseInt(theTextHeight.replace('px', ''));*/
 
-                
+
                 theTextHeight = $('.box_area_mini', area_pack).height(); // 24 when not in table. why 34 when inside the table? Use the box_area_mini for the work-around
 
 
@@ -1691,7 +1717,7 @@ Contents
         //************************************************************
         switch (options.lang) {
 
-            //日本語             
+            //日本語                                          
             case 'ja':
                 var msg = {
                     'add_btn': '追加ボタン',
@@ -1716,7 +1742,7 @@ Contents
                 };
                 break;
 
-            //英語             
+            //英語                                          
             case 'en':
                 var msg = {
                     'add_btn': 'Add button',
@@ -1741,7 +1767,7 @@ Contents
                 };
                 break;
 
-            //スペイン語 (Joaquin G. de la Zerda氏からの提供)             
+            //スペイン語 (Joaquin G. de la Zerda氏からの提供)                                          
             case 'es':
                 var msg = {
                     'add_btn': 'Agregar boton',
@@ -1777,6 +1803,7 @@ Contents
         });
 
         this.data('ajc', ajc); // added by Buen
+
 
         return this;
     };
