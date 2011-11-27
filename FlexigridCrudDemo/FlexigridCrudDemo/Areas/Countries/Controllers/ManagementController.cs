@@ -59,5 +59,29 @@ namespace FlexigridCrudDemo.Areas.Countries.Controllers
             return View();
         }
 
+
+
+        [HttpPost]
+        public string Caption(string q_word)
+        {
+            
+            if (string.IsNullOrEmpty(q_word)) return "";
+
+            Guid countryId;
+            bool isOk = Guid.TryParse(q_word, out countryId);
+
+            
+
+            return
+                isOk ?
+                _country.All
+                .Where(x => x.CountryId == countryId)
+                .Select(x => x.CountryName)
+                .SingleOrDefault() ?? ""
+                : "";
+            
+
+        }
+
     }
 }

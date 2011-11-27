@@ -54,7 +54,7 @@ namespace FlexigridCrudDemo.Areas.People.Controllers
                             new 
                             {
                                 id = x.PersonId.ToString(),
-                                cell = new string[] { x.Username, x.Firstname, x.Lastname, x.FavoriteNumber.ToString(), x.Country.CountryName }
+                                cell = new string[] { x.Username, x.Firstname, x.Lastname, x.FavoriteNumber.ToString(), x.Country.CountryName, Convert.ToBase64String(x.RowVersion) }
                             })
                 };
 
@@ -100,7 +100,7 @@ namespace FlexigridCrudDemo.Areas.People.Controllers
             
             // ModelState.Remove("Country.CountryId");
             SaveCommon(p);
-
+            
 
             var json = new JsonResult();
             json.Data =
@@ -131,6 +131,23 @@ namespace FlexigridCrudDemo.Areas.People.Controllers
             {
                 // ModelState.AddModelError("",ex.Message + "\n\n" + ex.InnerException.InnerException.Message);
                 ModelState.AddModelError("", ex.Message );
+                
+            }
+        }
+
+        [HttpPost]
+        public JsonResult Delete(Guid pk, byte[] version)
+        {
+
+            try
+            {
+                _person.Delete(pk, version);
+
+                return Json(new { IsOk = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { IsOk = false });
                 
             }
         }

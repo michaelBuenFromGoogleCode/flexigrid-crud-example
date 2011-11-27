@@ -38,7 +38,7 @@ namespace FlexigridCrudDemo
 
             // TargetRepository target = TargetRepository.NHibernate; 
 
-            int target = 2; // memory, nhibernate, entity framework
+            int target = 1; // memory, nhibernate, entity framework
 
 
             switch (target)
