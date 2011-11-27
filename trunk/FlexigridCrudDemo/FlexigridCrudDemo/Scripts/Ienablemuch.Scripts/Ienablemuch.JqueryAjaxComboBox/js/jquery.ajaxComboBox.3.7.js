@@ -1270,11 +1270,9 @@ Contents
                 // alert("get top" + $(area_pack).offset().top);
                 /*var theTextHeight = $(area_pack).css('height');
                 theTextHeight = parseInt(theTextHeight.replace('px', ''));*/
-                theTextHeight = $(area_pack).height();                
+
                 
-                //alert(theTextHeight); 24 when not in table. why 34 when inside the table?
-
-
+                theTextHeight = $('.box_area_mini', area_pack).height(); // 24 when not in table. why 34 when inside the table? Use the box_area_mini for the work-around
 
 
                 var theTop = $(area_pack).offset().top + theTextHeight - $(document).scrollTop();
@@ -1283,6 +1281,9 @@ Contents
                 $result_area.css('top', theTop + "px");
                 $result_area.css('left', theLeft);
 
+                $result_area.css('margin', 0);
+                $result_area.css('border', 0);
+                $result_area.css('padding', 0);
 
 
 
@@ -1690,7 +1691,7 @@ Contents
         //************************************************************
         switch (options.lang) {
 
-            //日本語           
+            //日本語             
             case 'ja':
                 var msg = {
                     'add_btn': '追加ボタン',
@@ -1715,7 +1716,7 @@ Contents
                 };
                 break;
 
-            //英語           
+            //英語             
             case 'en':
                 var msg = {
                     'add_btn': 'Add button',
@@ -1740,7 +1741,7 @@ Contents
                 };
                 break;
 
-            //スペイン語 (Joaquin G. de la Zerda氏からの提供)           
+            //スペイン語 (Joaquin G. de la Zerda氏からの提供)             
             case 'es':
                 var msg = {
                     'add_btn': 'Agregar boton',
